@@ -1,9 +1,17 @@
+using NexusCommerce.API.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+#region Service Registration
+
+/// <summary>
+/// Registers all required services with the dependency injection container.
+/// </summary>
+/// <remarks>
+/// Services are organized by concern using extension methods for better maintainability.
+/// </remarks>
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -14,31 +22,55 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Configure Swagger only in development environment
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Enforce HTTPS redirection for security
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Apply Cross-Origin Resource Sharing policy
+app.UseCors("AllowMyOrigin");
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+// Enable serving of static files from wwwroot
+app.UseStaticFiles();
 
+// Apply rate limiting to protect against abuse
+app.UseRateLimiter();
+
+// Global exception handling middleware
+app.UseGlobalExceptionHandling();
+
+// Enable authentication middleware
+app.UseAuthentication();
+
+// Enable authorization middleware
+app.UseAuthorization();
+
+// Map API controller endpoints
+app.MapControllers();
+
+#endregion
+
+#region Post-Build Operations
+
+/// <summary>
+/// Executes post-build operations including database seeding and logging configuration.
+/// </summary>
+/// <remarks>
+/// These operations run after the pipeline is configured but before the application starts.
+/// </remarks>
+
+// Run database seeding asynchronously
+await app.SeedDatabaseAsync();
+
+// Configure custom file-based logging
+app.ConfigureCustomFileLogging();
+
+#endregion
+
+// Start the application
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
