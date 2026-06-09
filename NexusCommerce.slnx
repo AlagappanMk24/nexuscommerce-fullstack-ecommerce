@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="NexusCommerce.API/NexusCommerce.API.csproj" />
+  <Project Path="NexusCommerce.Application/NexusCommerce.Application.csproj" />
+  <Project Path="NexusCommerce.Domain/NexusCommerce.Domain.csproj" />
+  <Project Path="NexusCommerce.Infrastructure/NexusCommerce.Infrastructure.csproj" />
+</Solution>

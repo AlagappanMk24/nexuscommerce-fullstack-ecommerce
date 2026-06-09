@@ -1,0 +1,36 @@
+## =======================================================================
+## 🛠️ .NET Core Backend Ignores
+## =======================================================================
+# IDE directories and files
+.vs/
+.vscode/
+*.suo
+*.user
+*.sln.docstates
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# Local configuration overrides
+appsettings.Development.json
+
+## =======================================================================
+## 📦 Angular Frontend Ignores (NexusCommerce.Client)
+## =======================================================================
+# Dependency directories
+**/NexusCommerce.Client/node_modules/
+
+# Angular cache and build outputs
+**/NexusCommerce.Client/.angular/
+**/NexusCommerce.Client/dist/
+**/NexusCommerce.Client/.server/
+
+# Local environment files (if you add them later for API keys)
+**/NexusCommerce.Client/src/environments/environment.development.ts
+
+## =======================================================================
+## 💻 OS and Miscellaneous Ignores
+## =======================================================================
+.DS_Store
+Thumbs.db
