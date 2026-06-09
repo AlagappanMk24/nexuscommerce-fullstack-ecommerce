@@ -12,17 +12,15 @@ var builder = WebApplication.CreateBuilder(args);
 /// </remarks>
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddHealthChecks();
+builder.Services.AddControllers();
 
+// 3. Add Swagger/OpenAPI support
+builder.Services.AddEndpointsApiExplorer(); // Necessary if using older Swagger tools
+builder.Services.AddSwaggerGen();
+#endregion
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// Configure Swagger only in development environment
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -38,22 +36,14 @@ app.UseCors("AllowMyOrigin");
 // Enable serving of static files from wwwroot
 app.UseStaticFiles();
 
-// Apply rate limiting to protect against abuse
-app.UseRateLimiter();
-
 // Global exception handling middleware
 app.UseGlobalExceptionHandling();
 
 // Enable authentication middleware
 app.UseAuthentication();
 
-// Enable authorization middleware
-app.UseAuthorization();
-
 // Map API controller endpoints
 app.MapControllers();
-
-#endregion
 
 #region Post-Build Operations
 
