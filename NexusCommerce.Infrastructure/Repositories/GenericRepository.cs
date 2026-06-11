@@ -4,29 +4,91 @@ using NexusCommerce.Infrastructure.Data.Context;
 
 namespace NexusCommerce.Infrastructure.Repositories
 {
-    public class GenericRepository<T>(NexusCommerceContext context) : IGenericRepository<T>
-        where T : class
+    /// <summary>
+    /// Generic repository implementation for basic CRUD operations
+    /// </summary>
+    /// <typeparam name="T">The entity type</typeparam>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="GenericRepository{T}"/> class
+    /// </remarks>
+    /// <param name="context">The database context</param>
+    /// <exception cref="ArgumentNullException">Thrown when context is null</exception>
+    public class GenericRepository<T>(NexusCommerceContext context) : IGenericRepository<T> where T : class
     {
-        protected readonly NexusCommerceContext _context = context;
+        protected readonly NexusCommerceContext _context = context ?? throw new ArgumentNullException(nameof(context));
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            try
+            {
+                return await _context.Set<T>().AsNoTracking().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving all entities of type {typeof(T).Name}", ex);
+            }
         }
-        public async Task<T> GetByIdAsync(int id)
+
+        /// <inheritdoc/>
+        public async Task<T?> GetByIdAsync(int id)
         {
-            return await _context.Set<T>().FindAsync(id);
+            try
+            {
+                return await _context.Set<T>().FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error retrieving entity of type {typeof(T).Name} with ID: {id}", ex);
+            }
         }
+
+        /// <inheritdoc/>
         public void Add(T entity)
         {
-            _context.Set<T>().Add(entity);
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                _context.Set<T>().Add(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error adding entity of type {typeof(T).Name}", ex);
+            }
         }
+
+        /// <inheritdoc/>
         public void Update(T entity)
         {
-            _context.Set<T>().Update(entity);
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                _context.Set<T>().Update(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error updating entity of type {typeof(T).Name}", ex);
+            }
         }
+
+        /// <inheritdoc/>
         public void Delete(T entity)
         {
-            _context.Set<T>().Remove(entity);
+            try
+            {
+                if (entity == null)
+                    throw new ArgumentNullException(nameof(entity));
+
+                _context.Set<T>().Remove(entity);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Error deleting entity of type {typeof(T).Name}", ex);
+            }
         }
     }
 }
