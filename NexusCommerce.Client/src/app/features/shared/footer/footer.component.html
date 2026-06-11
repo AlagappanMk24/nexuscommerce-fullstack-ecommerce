@@ -1,0 +1,49 @@
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a routerLink="/customer" class="footer-logo">Buyonic</a>
+      <p class="footer-tagline">Your trusted marketplace for quality products from verified sellers.</p>
+    </div>
+
+    <div class="footer-links">
+      <h4>Shop</h4>
+      <ul>
+        <li><a routerLink="/customer/browse">Browse Products</a></li>
+        <li><a routerLink="/customer/cart">Shopping Cart</a></li>
+        <li><a routerLink="/customer/wishlist">Wishlist</a></li>
+        <li><a routerLink="/customer/orders">My Orders</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-links">
+      <h4>Account</h4>
+      <ul>
+        <li><a routerLink="/customer/profile">My Profile</a></li>
+        <li><a routerLink="/customer/orders">Order History</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-social">
+      <h4>Follow Us</h4>
+      <div class="social-icons">
+        @for (link of socialLinks; track link.name) {
+          <a
+            [href]="link.href"
+            class="social-btn"
+            [attr.aria-label]="link.label"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="social-icon">{{ link.icon }}</span>
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <p>&copy; {{ year }} Buyonic. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
