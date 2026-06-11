@@ -11,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 /// Services are organized by concern using extension methods for better maintainability.
 /// </remarks>
 builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddIdentityAndAuthentication(builder.Configuration);
+builder.Services.AddWebLayer(builder.Configuration);
+builder.Services.AddApplicationAndInfrastructure();
 builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
 

@@ -12,7 +12,7 @@ using NexusCommerce.Infrastructure.Data.Context;
 namespace NexusCommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(NexusCommerceContext))]
-    [Migration("20260609101913_InitialMigration")]
+    [Migration("20260611071423_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -398,6 +398,9 @@ namespace NexusCommerce.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("OtpIdentifier")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -410,8 +413,14 @@ namespace NexusCommerce.Infrastructure.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TwoFactorCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("TwoFactorExpiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
