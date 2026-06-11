@@ -1,0 +1,197 @@
+<section class="auth-page">
+  <div class="auth-bg">
+    <div class="gradient-wave wave-1"></div>
+    <div class="gradient-wave wave-2"></div>
+    <div class="gradient-wave wave-3"></div>
+    <div class="particles"></div>
+  </div>
+
+  <div class="auth-container">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+            <path d="M6 10L16 4L26 10V22L16 28L6 22V10Z" stroke="url(#gradient)" stroke-width="2" fill="url(#gradient)" fill-opacity="0.1"/>
+            <circle cx="16" cy="16" r="3" fill="url(#gradient)"/>
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#667eea"/>
+                <stop offset="100%" stop-color="#764ba2"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="brand-name">Join<span>Nexus</span></h1>
+      </div>
+      <p class="brand-tagline">Start your shopping journey today</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="card-header">
+        <h2>Create Account</h2>
+        <p>Get started in minutes</p>
+      </div>
+
+      @if (errorMessage) {
+        <div class="alert alert-error">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-content">
+            <strong>Registration Failed</strong>
+            <span>{{ errorMessage }}</span>
+          </div>
+          <button class="alert-close" (click)="errorMessage = ''">×</button>
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="alert alert-success">
+          <div class="alert-icon">✅</div>
+          <div class="alert-content">
+            <strong>Success!</strong>
+            <span>{{ successMessage }}</span>
+          </div>
+          <button class="alert-close" (click)="successMessage = ''">×</button>
+        </div>
+      }
+
+      <!-- Account Type Toggle -->
+      <div class="account-type">
+        <button type="button" class="type-btn" [class.active]="form.get('accountType')?.value === 'Customer'"
+          (click)="form.get('accountType')?.setValue('Customer')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21V19C20 16.8 18.2 15 16 15H8C5.8 15 4 16.8 4 19V21"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Customer
+        </button>
+        <button type="button" class="type-btn" [class.active]="form.get('accountType')?.value === 'Seller'"
+          (click)="form.get('accountType')?.setValue('Seller')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9L12 3L21 9L12 15L3 9Z"/>
+            <path d="M5 10V16L12 20L19 16V10"/>
+          </svg>
+          Seller
+        </button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="form-row">
+          <div class="form-field">
+            <label>
+              <span class="label-text">First Name</span>
+              <div class="input-group">
+                <span class="input-icon">👤</span>
+                <input type="text" formControlName="firstName" placeholder="John">
+              </div>
+            </label>
+            @if (f['firstName'].invalid && f['firstName'].touched) {
+              <span class="field-error">First name is required</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label>
+              <span class="label-text">Last Name</span>
+              <div class="input-group">
+                <span class="input-icon">👤</span>
+                <input type="text" formControlName="lastName" placeholder="Doe">
+              </div>
+            </label>
+            @if (f['lastName'].invalid && f['lastName'].touched) {
+              <span class="field-error">Last name is required</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-text">Email Address</span>
+            <div class="input-group">
+              <span class="input-icon">✉️</span>
+              <input type="email" formControlName="email" placeholder="hello@example.com">
+            </div>
+          </label>
+          @if (f['email'].invalid && f['email'].touched) {
+            <span class="field-error">Please enter a valid email</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-text">Password</span>
+            <div class="input-group">
+              <span class="input-icon">🔒</span>
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Create a password">
+              <button type="button" class="toggle-password" (click)="showPassword = !showPassword">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+          </label>
+          @if (f['password'].invalid && f['password'].touched) {
+            <span class="field-error">Minimum 6 characters required</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label>
+            <span class="label-text">Confirm Password</span>
+            <div class="input-group">
+              <span class="input-icon">🔒</span>
+              <input type="password" formControlName="confirmPassword" placeholder="Confirm your password">
+            </div>
+          </label>
+          @if (f['confirmPassword'].touched && form.errors?.['mismatch']) {
+            <span class="field-error">Passwords do not match</span>
+          }
+        </div>
+
+        @if (isSeller) {
+          <div class="form-field">
+            <label>
+              <span class="label-text">Store Name</span>
+              <div class="input-group">
+                <span class="input-icon">🏪</span>
+                <input type="text" formControlName="storeName" placeholder="Your store name">
+              </div>
+            </label>
+            @if (f['storeName'].invalid && f['storeName'].touched) {
+              <span class="field-error">Store name is required</span>
+            }
+          </div>
+        }
+
+        @if (!isSeller) {
+          <div class="form-field">
+            <label>
+              <span class="label-text">Address <span class="optional">(Optional)</span></span>
+              <div class="input-group">
+                <span class="input-icon">📍</span>
+                <input type="text" formControlName="address" placeholder="Your address">
+              </div>
+            </label>
+          </div>
+        }
+
+        <button type="submit" class="btn-submit" [disabled]="loading">
+          @if (loading) {
+            <div class="spinner"></div>
+            <span>Creating account...</span>
+          } @else {
+            <span>Create Account</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12H19M19 12L12 5M19 12L12 19"/>
+            </svg>
+          }
+        </button>
+
+        <div class="divider">
+          <span>Already have an account?</span>
+        </div>
+
+        <a routerLink="/auth/login" class="btn-outline-link">
+          Sign In Instead →
+        </a>
+      </form>
+    </div>
+  </div>
+</section>

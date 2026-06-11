@@ -1,0 +1,127 @@
+<section class="auth-page">
+  <!-- Animated Background -->
+  <div class="auth-bg">
+    <div class="gradient-sphere sphere-1"></div>
+    <div class="gradient-sphere sphere-2"></div>
+    <div class="gradient-sphere sphere-3"></div>
+    <div class="particles"></div>
+  </div>
+
+  <div class="auth-container">
+    <!-- Brand Section -->
+    <div class="brand-section">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+            <path d="M6 10L16 4L26 10V22L16 28L6 22V10Z" stroke="url(#gradient)" stroke-width="2" fill="url(#gradient)" fill-opacity="0.1"/>
+            <circle cx="16" cy="16" r="3" fill="url(#gradient)"/>
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#667eea"/>
+                <stop offset="100%" stop-color="#764ba2"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="brand-name">Verify<span>OTP</span></h1>
+      </div>
+      <p class="brand-tagline">Enter the verification code</p>
+    </div>
+
+    <!-- Main Card -->
+    <div class="auth-card">
+      <div class="card-header">
+        <div class="header-icon">📧</div>
+        <h2>Check Your Email</h2>
+        <p>We've sent a 6-digit verification code to your registered email address.</p>
+        <p class="email-hint">Please check your inbox and spam folder</p>
+      </div>
+
+      <!-- Alert Messages -->
+      @if (errorMessage) {
+        <div class="alert alert-error">
+          <div class="alert-icon">⚠️</div>
+          <div class="alert-content">
+            <strong>Verification Failed</strong>
+            <span>{{ errorMessage }}</span>
+          </div>
+          <button class="alert-close" (click)="errorMessage = ''">×</button>
+        </div>
+      }
+
+      @if (successMessage) {
+        <div class="alert alert-success">
+          <div class="alert-icon">✅</div>
+          <div class="alert-content">
+            <strong>Success!</strong>
+            <span>{{ successMessage }}</span>
+          </div>
+          <button class="alert-close" (click)="successMessage = ''">×</button>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <!-- OTP Input Fields -->
+        <div class="otp-container">
+          <div class="otp-inputs">
+            @for (digit of [0,1,2,3,4,5]; track digit) {
+              <input
+                type="text"
+                maxlength="1"
+                [formControl]="getOtpControl(digit)"
+                (input)="onOtpInput($event, digit)"
+                (keydown)="onOtpKeydown($event, digit)"
+                class="otp-input"
+                [class.filled]="otpControls[digit].value"
+                [class.error]="otpInvalid && otpControls[digit].touched"
+                [attr.autofocus]="digit === 0 ? true : null"
+              >
+            }
+          </div>
+          @if (otpInvalid && form.get('otp')?.touched) {
+            <span class="field-error">Please enter a valid 6-digit code</span>
+          }
+        </div>
+
+        <!-- Timer and Resend -->
+        <div class="resend-section">
+          @if (timeRemaining > 0) {
+            <p class="timer-text">
+              Resend code in <span class="timer">{{ formatTime(timeRemaining) }}</span>
+            </p>
+          } @else {
+            <button type="button" class="resend-btn" (click)="resendOtp()" [disabled]="resending">
+              @if (resending) {
+                <span class="spinner-sm"></span> Sending...
+              } @else {
+                Resend Verification Code
+              }
+            </button>
+          }
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" [disabled]="loading || !isOtpComplete()">
+          @if (loading) {
+            <div class="spinner"></div>
+            <span>Verifying...</span>
+          } @else {
+            <span>Verify & Login</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 6L9 17L4 12"/>
+            </svg>
+          }
+        </button>
+
+        <div class="divider">
+          <span>Problems?</span>
+        </div>
+
+        <!-- Fixed: Using method instead of direct router access -->
+        <button type="button" class="btn-outline-link" (click)="goToLogin()">
+          Back to Login
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
